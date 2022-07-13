@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views import ResultDetail
 
 urlpatterns = [
-    path('', views.index)
+    path('cari/result', ResultDetail.as_view())
 ]
