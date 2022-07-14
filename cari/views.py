@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.decorators import api_view
+from django.http import JsonResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
@@ -7,9 +9,18 @@ from django.http import Http404
 from .serializers import UserSerializer, ResultSerializer
 from .models import User, Result
 
+class UserInfo(APIView):
+    def post(self, request):
+        user_img_url = request.data.get("user_url")
+        if user_img_url:
+            user = User(user_img_url=user_img_url)
+            user.save()
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=200)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class ResultDetail(APIView):
-
     # result_id에 맞는 결과물 가져옴
     def get_result_url(self, result_id):
         try:
