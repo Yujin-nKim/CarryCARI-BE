@@ -10,6 +10,7 @@ class User(models.Model):
     user_img = models.ImageField(blank=True, upload_to=upload_path)
     # user_img_url = models.TextField()
     updated_at = models.DateTimeField(auto_now=True)
+    user_email = models.EmailField(blank=True)
 
     def __str__(self):
         return f'[{self.user_id}]'

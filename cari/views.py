@@ -1,17 +1,21 @@
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
-from django.http import JsonResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
-
-from .serializers import UserSerializer, ResultSerializer
 from .models import User, Result
+# serializers
+from .serializers import UserSerializer, ResultSerializer
+# email
+from django.core.mail import BadHeaderError, send_mail
+from .email import send_email, html_message, sender, subject
+from pathlib import Path
 
 class UserInfo(APIView):
     def post(self, request):
-        user_img = request.data.get("user_img")
+        user_img = request.FILES.get("image")
         if user_img:
             user = User(user_img=user_img)
             user.save()
@@ -26,6 +30,23 @@ class UserInfo(APIView):
         #     serializer = UserSerializer(user)
         #     return Response(serializer.data, status=200)
         # return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class SendEmail(APIView):
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        user_email = request.data.get('user_email')
+
+        # Todo : 결과 이미지와 link 시키기
+        image_path = "result_path"
+        image_name = Path(image_path).name
+        text_message = f"Email with a nice embedded image {image_name}."
+
+        if image_path:
+            send_email(subject=subject, text_content=text_message, html_content=html_message, sender=sender,
+                       recipient=user_email, image_path=image_path, image_name=image_name)
+            return Response(status=200)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResultDetail(APIView):
