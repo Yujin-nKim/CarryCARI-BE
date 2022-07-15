@@ -1,10 +1,14 @@
 from django.db import models
 
 
+def upload_path(instance,filename):
+    return '/'.join(['user_images',filename])
+
 # 사용자 이미지 저장
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
-    user_img_url = models.TextField()
+    user_img = models.ImageField(blank=True, upload_to=upload_path)
+    # user_img_url = models.TextField()
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

@@ -11,13 +11,21 @@ from .models import User, Result
 
 class UserInfo(APIView):
     def post(self, request):
-        user_img_url = request.data.get("user_url")
-        if user_img_url:
-            user = User(user_img_url=user_img_url)
+        user_img = request.data.get("user_img")
+        if user_img:
+            user = User(user_img=user_img)
             user.save()
             serializer = UserSerializer(user)
             return Response(serializer.data, status=200)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        # user_img_url = request.data.get("user_url")
+        # if user_img_url:
+        #     user = User(user_img_url=user_img_url)
+        #     user.save()
+        #     serializer = UserSerializer(user)
+        #     return Response(serializer.data, status=200)
+        # return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResultDetail(APIView):
