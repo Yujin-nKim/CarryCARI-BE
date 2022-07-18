@@ -12,6 +12,7 @@ from .serializers import UserSerializer, ResultSerializer
 from django.core.mail import BadHeaderError, send_mail
 from .email import send_email, html_message, sender, subject
 from pathlib import Path
+import shutil, os
 
 class UserInfo(APIView):
     def post(self, request):
@@ -20,7 +21,19 @@ class UserInfo(APIView):
             user = User(user_img=user_img)
             user.save()
             serializer = UserSerializer(user)
+
+            # save user image in another directory
+            src = './_media/{filename}'.format(filename=user.user_img.name)
+
+            # make directory
+            dest = "./assets/user_img/{user_id}".format(user_id=user.user_id)
+            os.makedirs(dest)
+
+            # copy to new directory
+            shutil.copy(src, dest)
+
             return Response(serializer.data, status=200)
+
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # user_img_url = request.data.get("user_url")
