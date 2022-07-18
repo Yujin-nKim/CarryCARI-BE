@@ -1,8 +1,8 @@
 from django.db import models
 
 
-def upload_path(instance,filename):
-    return '/'.join(['user_images',filename])
+def upload_path(instance, filename):
+    return '/'.join(['user_images', filename])
 
 
 # 사용자 이미지 저장
