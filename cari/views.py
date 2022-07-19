@@ -5,6 +5,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpRe
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
+
+from ml import ai
 from .models import User, Result
 # serializers
 from .serializers import UserSerializer, ResultSerializer
@@ -74,6 +76,12 @@ class ResultDetail(APIView):
         before_img = self.get_user_img(user_id).url
         # TODO : before_img와 emotion을 ai모델에 input으로 넣어서 결과물 산출하기
 
+        user_id = 4
+
+        image_path = ""
+        emotion = 3
+
+        ai.generate_imageclip(user_id, image_path, emotion)
         # TODO : 나온 결과물 DB(Result)에 저장하기
 
         after_img = self.get_result_img(user_id).url  # 모델 돌린 결과 url
