@@ -87,11 +87,16 @@ class ResultDetail(APIView):
         before_img = self.get_user_img(user_id).url
         # TODO : before_img와 emotion을 ai모델에 input으로 넣어서 결과물 산출하기
 
+        # if emotion != 0:
+
+
+        # os.system()
+
         # TODO : 나온 결과물 DB(Result)에 저장하기
 
-        after_img = self.get_result_img(user_id).url  # 모델 돌린 결과 url
+        # after_img = self.get_result_img(user_id).url  # 모델 돌린 결과 url
 
         return Response({
             "before_img": before_img,
-            "after_img": after_img
+            "after_img": "a"
         })
