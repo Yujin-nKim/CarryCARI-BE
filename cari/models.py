@@ -4,7 +4,6 @@ from django.db import models
 def upload_path(instance, filename):
     return '/'.join(['user_images', filename])
 
-
 # 사용자 이미지 저장
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
@@ -20,7 +19,7 @@ class User(models.Model):
 # 결과물 이미지 저장
 class Result(models.Model):
     result_id = models.AutoField(primary_key=True)
-    result_img = models.ImageField(blank=True, upload_to='result_images/')
+    result_img_path = models.CharField(max_length=250)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     result_emotion = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
