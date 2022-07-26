@@ -6,15 +6,19 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 from .models import User, Result
+
 # serializers
 from .serializers import UserSerializer, ResultSerializer
+
 # email
 from django.core.mail import BadHeaderError, send_mail
 from .email import send_email, html_message, sender, subject
 from pathlib import Path
 import shutil, os
-# StyleCariGAN
+
+# run AImodel
 from . import StyleCariGAN
+from . import StyleCLIP
 
 class UserInfo(APIView):
     def post(self, request):
@@ -25,26 +29,21 @@ class UserInfo(APIView):
             serializer = UserSerializer(user)
 
             # save user image in another directory
-            src = './_media/{filename}'.format(filename=user.user_img.name)
+            src = '/home/teamg/volume/CarryCARI-BE/_media/{filename}'.format(filename=user.user_img.name)
+            # src = './_media/{filename}'.format(filename=user.user_img.name)
 
             # make directory
-            dest = "./assets/user_img/{user_id}".format(user_id=user.user_id)
+            dest = "/home/teamg/volume/CarryCARI-BE/assets/user_img/{user_id}".format(user_id=user.user_id)
+            # dest = "./assets/user_img/{user_id}".format(user_id=user.user_id)
             os.makedirs(dest)
 
-            # copy to new directory 
+            # copy to new directory
             shutil.copy(src, dest)
 
             return Response(serializer.data, status=200)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        # user_img_url = request.data.get("user_url")
-        # if user_img_url:
-        #     user = User(user_img_url=user_img_url)
-        #     user.save()
-        #     serializer = UserSerializer(user)
-        #     return Response(serializer.data, status=200)
-        # return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class SendEmail(APIView):
     def post(self, request):
@@ -89,24 +88,28 @@ class ResultDetail(APIView):
 
         before_img = self.get_user_img(user_id).url
 
-
         if emotion == 0: #stylecarigan만 실행
+            print("======func1======")
+            print("StyleCariGAN만 실행...")
             StyleCariGAN.run_StyleCariGAN(user, user_id, emotion)
         else: #styleclip -> stylecarigan 실행
-            print(".")
+            print("======func2, emotion = " + str(emotion) +"======")
+            print("StyleCLIP 실행...")
+            StyleCLIP.run_StyleCLIP(user, user_id, emotion)
+            print("StyleCariGAN 실행...")
+            StyleCariGAN.run_StyleCariGAN(user, user_id, emotion)
 
         result_image_path = '/home/teamg/volume/CarryCARI-BE/ml/StyleCariGAN/final_result/' 
         file_list = os.listdir(result_image_path)
-        os.makedirs(f'/home/teamg/volume/CarryCARI-BE/_media/result_images/{user_id}/')
 
         for item in file_list:
             result = Result()
             result.user_id = User.objects.get(user_id=user_id)
             image_path = f'/home/teamg/volume/CarryCARI-BE/ml/StyleCariGAN/final_result/{item}' 
-            upload_path = f'/home/teamg/volume/CarryCARI-BE/_media/result_images/{user_id}/{item}'
+            upload_path = f'/home/teamg/volume/CarryCARI-BE/_media/result_images/{item}'
 
             shutil.copy(image_path, upload_path)
-            result.result_img_path = f'/_media/result_images/{user_id}/{item}'
+            result.result_img_path = f'/_media/result_images/{item}'
 
             result.result_emotion = emotion
             result.save()

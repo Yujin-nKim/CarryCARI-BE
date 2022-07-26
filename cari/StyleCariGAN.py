@@ -15,7 +15,7 @@ def make_input_directory():
         parent_dir = carigan_path
         path = os.path.join(parent_dir, dir)
         os.mkdir(path)
-
+ 
 
 def make_output_directory():
         #StyleCariGAN/user_result
@@ -63,7 +63,8 @@ def find_inputImg_2(user, user_id, emotion):
                 file_name = user.user_img.name.split('/')[1] #ex) cat.png
                 input_img = project_path + f"/assets/user_img/{user_id}/{file_name}"
         else : #func2
-                input_img = project_path + f"/assets/user_img_clip/user_{user_id}.jpg" #StyleCLIP의 결과물, user_{user_id}.jpg
+                #input_img = project_path + f"/assets/user_img_clip/user_{user_id}.jpg" #StyleCLIP의 결과물, user_{user_id}.jpg
+                input_img = project_path + f"/ml/StyleCLIP-pytorch/user_result/clip_result.png"
 
         #input dir에 png로 바꿔서 photo.png로 저장
         os.chdir(carigan_path + "/user_image")
@@ -74,7 +75,7 @@ def find_inputImg_2(user, user_id, emotion):
 def test():
         os.chdir(carigan_path)
 
-                # python test.py --ckpt [CHECKPOINT_PATH]              --input_dir [INPUT_IMAGE_PATH] --output_dir [OUTPUT_CARICATURE_PATH] --invert_images
+        # python test.py --ckpt [CHECKPOINT_PATH]              --input_dir [INPUT_IMAGE_PATH] --output_dir [OUTPUT_CARICATURE_PATH] --invert_images
         os.system("python test.py --ckpt ./checkpoint/StyleCariGAN/001000.pt --input_dir ./user_image --output_dir ./user_result --invert_images")
 
 
