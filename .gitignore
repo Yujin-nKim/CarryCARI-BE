@@ -130,3 +130,7 @@ dmypy.json
 
 .idea/
 migrations/
+
+# media files
+_media/
+assets/user_img/
